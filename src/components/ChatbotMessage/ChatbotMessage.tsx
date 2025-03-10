@@ -4,70 +4,32 @@ import ConditionallyRender from 'react-conditionally-render';
 import ChatbotMessageAvatar from './ChatBotMessageAvatar/ChatbotMessageAvatar';
 import Loader from '../Loader/Loader';
 
-import './ChatbotMessage.css';
-import { callIfExists } from '../Chat/chatUtils';
-import { ICustomComponents, ICustomStyles } from '../../interfaces/IConfig';
-
-interface IChatbotMessageProps {
-  message: string;
-  withAvatar?: boolean;
-  loading?: boolean;
-  messages: any[];
-  delay?: number;
-  id: number;
-  setState?: React.Dispatch<React.SetStateAction<any>>;
-  customComponents?: ICustomComponents;
-  customStyles: { backgroundColor: string };
-}
 const ChatbotMessage = ({
   message,
   withAvatar = true,
   loading,
-  messages,
-  customComponents,
-  setState,
-  customStyles,
   delay,
   id,
-}: IChatbotMessageProps) => {
-  const [show, toggleShow] = useState(false);
+  customComponents,
+  customStyles,
+}) => {
+  const [showMessage, setShowMessage] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let timeoutId: any;
-    const disableLoading = (
-      messages: any[],
-      setState: React.Dispatch<React.SetStateAction<any>>
-    ) => {
-      let defaultDisableTime = 3000;
-      if (delay) defaultDisableTime += delay;
+    // ✅ 로딩 애니메이션을 즉시 시작
+    setIsLoading(true);
 
-      timeoutId = setTimeout(() => {
-        const newMessages = [...messages].map(message => {
-          if (message.id === id) {
-            return {...message, loading: false, delay: undefined};
-          }
+    // ✅ 메시지는 `delay` 후에 표시
+    const messageTimer = setTimeout(() => {
+      setShowMessage(true);
+      setIsLoading(false);
+    }, delay);
 
-          return message;
-        });
-
-        setState((state: any) => ({...state, messages: newMessages}));
-      }, defaultDisableTime);
-    };
-
-    disableLoading(messages, setState);
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [delay, id]);
-
-  useEffect(() => {
-    if (delay) {
-      setTimeout(() => toggleShow(true), delay);
-    } else {
-      toggleShow(true);
-    }
+    return () => clearTimeout(messageTimer);
   }, [delay]);
 
+  // ✅ 기존 스타일 유지
   const chatBoxCustomStyles = { backgroundColor: '' };
   const arrowCustomStyles = { borderRightColor: '' };
 
@@ -78,7 +40,7 @@ const ChatbotMessage = ({
 
   return (
     <ConditionallyRender
-      condition={show}
+      condition={isLoading || showMessage}  // ✅ 로딩 중이거나 메시지를 표시할 경우 렌더링
       show={
         <div className="react-chatbot-kit-chat-bot-message-container">
           <ConditionallyRender
@@ -86,7 +48,7 @@ const ChatbotMessage = ({
             show={
               <ConditionallyRender
                 condition={!!customComponents?.botAvatar}
-                show={callIfExists(customComponents?.botAvatar)}
+                show={customComponents?.botAvatar}
                 elseShow={<ChatbotMessageAvatar />}
               />
             }
@@ -94,7 +56,7 @@ const ChatbotMessage = ({
 
           <ConditionallyRender
             condition={!!customComponents?.botChatMessage}
-            show={callIfExists(customComponents?.botChatMessage, {
+            show={customComponents?.botChatMessage({
               message,
               loader: <Loader />,
             })}
@@ -103,8 +65,9 @@ const ChatbotMessage = ({
                 className="react-chatbot-kit-chat-bot-message"
                 style={chatBoxCustomStyles}
               >
+                {/* ✅ 로딩 상태 유지 후 메시지 표시 */}
                 <ConditionallyRender
-                  condition={loading}
+                  condition={isLoading}
                   show={<Loader />}
                   elseShow={<span>{message}</span>}
                 />
@@ -127,3 +90,4 @@ const ChatbotMessage = ({
 };
 
 export default ChatbotMessage;
+
