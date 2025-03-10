@@ -38,7 +38,7 @@ const ChatbotMessage = ({
       messages: any[],
       setState: React.Dispatch<React.SetStateAction<any>>
     ) => {
-      let defaultDisableTime = 750;
+      let defaultDisableTime = 3000;
       if (delay) defaultDisableTime += delay;
 
       timeoutId = setTimeout(() => {
