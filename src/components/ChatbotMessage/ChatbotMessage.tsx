@@ -37,7 +37,6 @@ const ChatbotMessage = ({
   const [isLoading, setIsLoading] = useState(!!loading);
   const [finalMessage, setFinalMessage] = useState<string | React.ReactNode>(message);
 
-  // (1) 지연(delay)시간이 있다면, 그만큼 지난 뒤 메시지를 표시
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
 
@@ -52,7 +51,6 @@ const ChatbotMessage = ({
     };
   }, [delay]);
 
-  // (2) requestFunc가 존재한다면, 비동기 요청 후 메시지를 업데이트
   useEffect(() => {
     if (requestFunc) {
       let canceled = false;
@@ -60,6 +58,7 @@ const ChatbotMessage = ({
 
       requestFunc()
         .then((res) => {
+                    console.log(res)
           if (!canceled) {
             const data = res?.data;
             const responseText = data?.response || '응답이 없습니다.';
