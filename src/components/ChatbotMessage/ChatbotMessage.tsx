@@ -7,7 +7,7 @@ import { callIfExists } from '../Chat/chatUtils';
 import { ICustomComponents } from '../../interfaces/IConfig';
 
 interface IChatbotMessageProps {
-  message: string;
+  message: string | React.ReactNode;
   withAvatar?: boolean;
   loading?: boolean;
   delay?: number;
@@ -17,7 +17,7 @@ interface IChatbotMessageProps {
   messages?: any[];
   setState?: React.Dispatch<React.SetStateAction<any>>;
   requestFunc?: () => Promise<any>;
-  onResponse?: (data: any) => void; // 추가된 콜백
+  onResponse?: (data: any) => React.ReactNode;
 }
 
 const ChatbotMessage = ({
@@ -31,11 +31,14 @@ const ChatbotMessage = ({
   messages,
   setState,
   requestFunc,
-  onResponse,        // onResponse 추가
+  onResponse, // onResponse 추가
 }: IChatbotMessageProps) => {
   const [show, setShow] = useState(false);
   const [isLoading, setIsLoading] = useState(!!loading);
-  const [finalMessage, setFinalMessage] = useState(message);
+  // finalMessage를 문자열 혹은 ReactNode로 가능하게
+  const [finalMessage, setFinalMessage] = useState<string | React.ReactNode>(
+    message,
+  );
 
   // 지연(delay) 처리
   useEffect(() => {
@@ -65,7 +68,7 @@ const ChatbotMessage = ({
 
             if (onResponse) {
               const returnedCompoenent = onResponse(data);
-              setFinalMessage(returnedCompoenent)
+              setFinalMessage(returnedCompoenent);
             }
           }
         })
@@ -154,7 +157,6 @@ const ChatbotMessage = ({
                     ></div>
                   }
                 />
-
               </div>
             }
           />
@@ -165,4 +167,3 @@ const ChatbotMessage = ({
 };
 
 export default ChatbotMessage;
-
