@@ -31,16 +31,14 @@ const ChatbotMessage = ({
   messages,
   setState,
   requestFunc,
-  onResponse, // onResponse 추가
+  onResponse,
 }: IChatbotMessageProps) => {
   const [show, setShow] = useState(false);
   const [isLoading, setIsLoading] = useState(!!loading);
-  // finalMessage를 문자열 혹은 ReactNode로 가능하게
   const [finalMessage, setFinalMessage] = useState<string | React.ReactNode>(
     message,
   );
 
-  // 지연(delay) 처리
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
     if (delay) {
@@ -53,7 +51,6 @@ const ChatbotMessage = ({
     };
   }, [delay]);
 
-  // requestFunc + onResponse 처리
   useEffect(() => {
     if (requestFunc) {
       let canceled = false;
@@ -64,11 +61,10 @@ const ChatbotMessage = ({
           if (!canceled) {
             const data = res?.data;
             const responseText = data?.response || '응답이 없습니다.';
-            setFinalMessage(responseText);
+            setFinalMessage(data);
 
             if (onResponse) {
-              const returnedCompoenent = onResponse(responseText);
-              setFinalMessage(returnedCompoenent);
+              console.log(data);
             }
           }
         })
