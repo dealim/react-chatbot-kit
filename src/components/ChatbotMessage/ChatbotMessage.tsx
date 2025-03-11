@@ -35,7 +35,7 @@ const ChatbotMessage = ({
 }: IChatbotMessageProps) => {
   const [show, setShow] = useState(false);
   const [isLoading, setIsLoading] = useState(!!loading);
-  const [finalMessage, setFinalMessage] = useState<string | React.ReactNode>(
+  const [finalMessage, setFinalMessage] = useState<string>(
     message,
   );
 
@@ -62,6 +62,7 @@ const ChatbotMessage = ({
             const data = res?.data;
             const responseText = data?.response || '응답이 없습니다.';
             setFinalMessage(responseText);
+
             if (onResponse) {
               onResponse(data);
             }
