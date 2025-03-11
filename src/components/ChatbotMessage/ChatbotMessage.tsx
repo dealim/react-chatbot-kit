@@ -14,13 +14,8 @@ interface IChatbotMessageProps {
   id: number;
   customComponents?: ICustomComponents;
   customStyles?: { backgroundColor: string };
-
-  // 아래 2개가 "무한 루프"의 원인이 되기 쉬움.
-  // 필요 없는 경우엔 굳이 props로 전달받지 않고, 내부에서만 관리 가능.
   messages?: any[];
   setState?: React.Dispatch<React.SetStateAction<any>>;
-
-  // requestFunc가 있으면 내부에서 비동기 요청 -> 완료 시 로딩 해제
   requestFunc?: () => Promise<any>;
 }
 
@@ -32,15 +27,14 @@ const ChatbotMessage = ({
   id,
   customComponents,
   customStyles,
-  messages,      // 가능하면 빼거나, 필요하면 쓰되 의존성 배열에서 제외
-  setState,      // 필요 없다면 빼는 게 좋음
+  messages,
+  setState,
   requestFunc,
 }: IChatbotMessageProps) => {
   const [show, setShow] = useState(false);
   const [isLoading, setIsLoading] = useState(!!loading);
   const [finalMessage, setFinalMessage] = useState(message);
 
-  // (A) delay 후 메시지를 보이기
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
     if (delay) {
@@ -53,18 +47,15 @@ const ChatbotMessage = ({
     };
   }, [delay]);
 
-  // (B) requestFunc 있으면 -> 비동기 로직, 없으면 -> 타이머 로딩 해제
-  //     **의존성 배열에 messages / setState 포함하지 말기**
   useEffect(() => {
     if (requestFunc) {
-      // 비동기 요청
       let canceled = false;
       setIsLoading(true);
 
       requestFunc()
         .then((res) => {
           if (!canceled) {
-            setFinalMessage(res?.data?.message || '응답이 없습니다.');
+            setFinalMessage(res?.data?.response || '응답이 없습니다.');
           }
         })
         .catch(() => {
@@ -100,7 +91,8 @@ const ChatbotMessage = ({
 
       return () => clearTimeout(timeoutId);
     }
-  // 여기서 의존성 배열에는 (requestFunc, delay, id) 정도만 넣음
+
+    // 여기서 의존성 배열에는 (requestFunc, delay, id) 정도만 넣음
   }, [requestFunc, delay, id]);
 
   // --- 스타일 ---
@@ -143,6 +135,7 @@ const ChatbotMessage = ({
                   show={<Loader />}
                   elseShow={<span>{finalMessage}</span>}
                 />
+
                 <ConditionallyRender
                   condition={withAvatar}
                   show={
@@ -152,6 +145,7 @@ const ChatbotMessage = ({
                     ></div>
                   }
                 />
+
               </div>
             }
           />
@@ -162,4 +156,3 @@ const ChatbotMessage = ({
 };
 
 export default ChatbotMessage;
-
