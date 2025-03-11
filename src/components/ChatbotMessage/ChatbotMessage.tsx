@@ -4,7 +4,7 @@ import ChatbotMessageAvatar from './ChatBotMessageAvatar/ChatbotMessageAvatar';
 import Loader from '../Loader/Loader';
 import './ChatbotMessage.css';
 import { callIfExists } from '../Chat/chatUtils';
-import { ICustomComponents, ICustomStyles } from '../../interfaces/IConfig';
+import { ICustomComponents } from '../../interfaces/IConfig';
 
 interface IChatbotMessageProps {
   message: string;
@@ -17,6 +17,7 @@ interface IChatbotMessageProps {
   messages?: any[];
   setState?: React.Dispatch<React.SetStateAction<any>>;
   requestFunc?: () => Promise<any>;
+  onResponse?: (data: any) => void; // 추가된 콜백
 }
 
 const ChatbotMessage = ({
@@ -30,11 +31,13 @@ const ChatbotMessage = ({
   messages,
   setState,
   requestFunc,
+  onResponse,        // onResponse 추가
 }: IChatbotMessageProps) => {
   const [show, setShow] = useState(false);
   const [isLoading, setIsLoading] = useState(!!loading);
   const [finalMessage, setFinalMessage] = useState(message);
 
+  // 지연(delay) 처리
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
     if (delay) {
@@ -47,6 +50,7 @@ const ChatbotMessage = ({
     };
   }, [delay]);
 
+  // requestFunc + onResponse 처리
   useEffect(() => {
     if (requestFunc) {
       let canceled = false;
@@ -55,7 +59,14 @@ const ChatbotMessage = ({
       requestFunc()
         .then((res) => {
           if (!canceled) {
-            setFinalMessage(res?.data?.response || '응답이 없습니다.');
+            const data = res?.data;
+            const responseText = data?.response || '응답이 없습니다.';
+            setFinalMessage(responseText);
+
+            // onResponse가 있다면, 응답 데이터를 콜백으로 넘겨줌
+            if (onResponse) {
+              onResponse(data);
+            }
           }
         })
         .catch(() => {
@@ -64,7 +75,9 @@ const ChatbotMessage = ({
           }
         })
         .finally(() => {
-          if (!canceled) setIsLoading(false);
+          if (!canceled) {
+            setIsLoading(false);
+          }
         });
 
       return () => {
@@ -74,8 +87,6 @@ const ChatbotMessage = ({
       // 기존 방식: 0.75초 후 로딩 해제
       const defaultDisableTime = 750 + (delay || 0);
       const timeoutId = setTimeout(() => {
-        // 내부 isLoading만 끄거나, 필요하다면 setState로 messages를 갱신.
-        // → "여기서 messages 바뀌어도 useEffect 의존성에 안 넣었으므로 재호출X"
         setIsLoading(false);
 
         if (setState && messages) {
@@ -91,9 +102,7 @@ const ChatbotMessage = ({
 
       return () => clearTimeout(timeoutId);
     }
-
-    // 여기서 의존성 배열에는 (requestFunc, delay, id) 정도만 넣음
-  }, [requestFunc, delay, id]);
+  }, [requestFunc, onResponse, delay, id, messages, setState]);
 
   // --- 스타일 ---
   const chatBoxCustomStyles = { backgroundColor: '' };
@@ -156,3 +165,4 @@ const ChatbotMessage = ({
 };
 
 export default ChatbotMessage;
+
