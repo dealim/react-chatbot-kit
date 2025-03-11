@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ConditionallyRender from 'react-conditionally-render';
-import ChatbotMessageAvatar from './ChatBotMessageAvatar/ChatbotMessageAvatar';
+import ChatbotMessageAvatar from './ChatbotMessageAvatar/ChatbotMessageAvatar';
 import Loader from '../Loader/Loader';
 import './ChatbotMessage.css';
 import { callIfExists } from '../Chat/chatUtils';
@@ -35,22 +35,24 @@ const ChatbotMessage = ({
 }: IChatbotMessageProps) => {
   const [show, setShow] = useState(false);
   const [isLoading, setIsLoading] = useState(!!loading);
-  const [finalMessage, setFinalMessage] = useState<string>(
-    message,
-  );
+  const [finalMessage, setFinalMessage] = useState<string | React.ReactNode>(message);
 
+  // (1) 지연(delay)시간이 있다면, 그만큼 지난 뒤 메시지를 표시
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
+
     if (delay) {
       timer = setTimeout(() => setShow(true), delay);
     } else {
       setShow(true);
     }
+
     return () => {
       if (timer) clearTimeout(timer);
     };
   }, [delay]);
 
+  // (2) requestFunc가 존재한다면, 비동기 요청 후 메시지를 업데이트
   useEffect(() => {
     if (requestFunc) {
       let canceled = false;
@@ -64,7 +66,7 @@ const ChatbotMessage = ({
             setFinalMessage(responseText);
 
             if (onResponse) {
-              onResponse(data);
+              setFinalMessage(onResponse(data));
             }
           }
         })
@@ -83,7 +85,7 @@ const ChatbotMessage = ({
         canceled = true;
       };
     } else {
-      // 기존 방식: 0.75초 후 로딩 해제
+      // (3) 기존 방식: 0.75초 후 로딩 해제
       const defaultDisableTime = 750 + (delay || 0);
       const timeoutId = setTimeout(() => {
         setIsLoading(false);
@@ -103,14 +105,16 @@ const ChatbotMessage = ({
     }
   }, [requestFunc, onResponse, delay, id]);
 
-  // --- 스타일 ---
+  // 스타일 처리
   const chatBoxCustomStyles = { backgroundColor: '' };
   const arrowCustomStyles = { borderRightColor: '' };
+
   if (customStyles) {
     chatBoxCustomStyles.backgroundColor = customStyles.backgroundColor;
     arrowCustomStyles.borderRightColor = customStyles.backgroundColor;
   }
 
+  // 최종 렌더링
   return (
     <ConditionallyRender
       condition={show}
@@ -163,3 +167,4 @@ const ChatbotMessage = ({
 };
 
 export default ChatbotMessage;
+
