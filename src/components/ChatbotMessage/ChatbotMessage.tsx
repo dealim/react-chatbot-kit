@@ -67,7 +67,7 @@ const ChatbotMessage = ({
             setFinalMessage(responseText);
 
             if (onResponse) {
-              const returnedCompoenent = onResponse(data);
+              const returnedCompoenent = onResponse(responseText);
               setFinalMessage(returnedCompoenent);
             }
           }
