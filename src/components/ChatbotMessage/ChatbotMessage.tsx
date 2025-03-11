@@ -102,7 +102,7 @@ const ChatbotMessage = ({
 
       return () => clearTimeout(timeoutId);
     }
-  }, [requestFunc, onResponse, delay, id, messages, setState]);
+  }, [requestFunc, onResponse, delay, id]);
 
   // --- 스타일 ---
   const chatBoxCustomStyles = { backgroundColor: '' };
