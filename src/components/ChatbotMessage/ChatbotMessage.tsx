@@ -63,9 +63,9 @@ const ChatbotMessage = ({
             const responseText = data?.response || '응답이 없습니다.';
             setFinalMessage(responseText);
 
-            // onResponse가 있다면, 응답 데이터를 콜백으로 넘겨줌
             if (onResponse) {
-              onResponse(data);
+              const returnedCompoenent = onResponse(data);
+              setFinalMessage(returnedCompoenent)
             }
           }
         })
@@ -142,7 +142,7 @@ const ChatbotMessage = ({
                 <ConditionallyRender
                   condition={isLoading}
                   show={<Loader />}
-                  elseShow={<span>{finalMessage}</span>}
+                  elseShow={<div>{finalMessage}</div>}
                 />
 
                 <ConditionallyRender
