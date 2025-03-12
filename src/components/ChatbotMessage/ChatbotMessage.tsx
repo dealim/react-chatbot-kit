@@ -60,6 +60,7 @@ const ChatbotMessage = ({
 
       requestFunc()
         .then((res) => {
+          console.log(res);
           if (!canceled) {
             const data = res?.data;
             const responseText = data?.response || '응답이 없습니다.';
@@ -85,6 +86,7 @@ const ChatbotMessage = ({
         canceled = true;
       };
     } else {
+      // (3) 기존 방식: 0.75초 후 로딩 해제
       const defaultDisableTime = 750 + (delay || 0);
       const timeoutId = setTimeout(() => {
         setIsLoading(false);
