@@ -35,7 +35,9 @@ const ChatbotMessage = ({
 }: IChatbotMessageProps) => {
   const [show, setShow] = useState(false);
   const [isLoading, setIsLoading] = useState(!!loading);
-  const [finalMessage, setFinalMessage] = useState<string | React.ReactNode>(message);
+  const [finalMessage, setFinalMessage] = useState<string | React.ReactNode>(
+    message,
+  );
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -58,6 +60,7 @@ const ChatbotMessage = ({
 
       requestFunc()
         .then((res) => {
+          console.log(res);
           if (!canceled) {
             const data = res?.data;
             const responseText = data?.response || '응답이 없습니다.';
@@ -164,4 +167,3 @@ const ChatbotMessage = ({
 };
 
 export default ChatbotMessage;
-
