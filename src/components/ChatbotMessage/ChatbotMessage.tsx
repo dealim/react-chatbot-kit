@@ -60,10 +60,10 @@ const ChatbotMessage = ({
 
       requestFunc()
         .then((res) => {
-          console.log(res);
           if (!canceled) {
             const data = res?.data;
             const responseText = data?.response || '응답이 없습니다.';
+            console.log(data);
             setFinalMessage(responseText);
 
             if (onResponse) {
