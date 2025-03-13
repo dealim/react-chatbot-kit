@@ -86,7 +86,6 @@ const ChatbotMessage = ({
         canceled = true;
       };
     } else {
-      // (3) 기존 방식: 0.75초 후 로딩 해제
       const defaultDisableTime = 750 + (delay || 0);
       const timeoutId = setTimeout(() => {
         setIsLoading(false);
@@ -115,7 +114,6 @@ const ChatbotMessage = ({
     arrowCustomStyles.borderRightColor = customStyles.backgroundColor;
   }
 
-  // 최종 렌더링
   return (
     <ConditionallyRender
       condition={show}
