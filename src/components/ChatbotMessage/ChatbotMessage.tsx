@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ConditionallyRender from 'react-conditionally-render';
-import ChatbotMessageAvatar from './ChatbotMessageAvatar/ChatbotMessageAvatar';
 import Loader from '../Loader/Loader';
 import './ChatbotMessage.css';
 import { callIfExists } from '../Chat/chatUtils';
 import { ICustomComponents } from '../../interfaces/IConfig';
+import ChatbotMessageAvatar from './ChatBotMessageAvatar/ChatbotMessageAvatar';
 
 interface IChatbotMessageProps {
   message: string | React.ReactNode;
