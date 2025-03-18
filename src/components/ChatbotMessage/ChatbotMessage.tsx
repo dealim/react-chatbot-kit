@@ -73,7 +73,7 @@ const ChatbotMessage = ({
         })
         .catch(() => {
           if (!canceled) {
-            setFinalMessage('오류가 발생했습니다.');
+            setFinalMessage('질문을 이해하지 못했어요.');
           }
         })
         .finally(() => {
