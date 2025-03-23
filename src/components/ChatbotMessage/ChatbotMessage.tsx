@@ -144,7 +144,20 @@ const ChatbotMessage = ({
                 <ConditionallyRender
                   condition={isLoading}
                   show={<Loader />}
-                  elseShow={<div>{finalMessage}</div>}
+                  elseShow={
+                    typeof finalMessage === 'string' ? (
+                      <div>
+                        {finalMessage.split('\n').map((line, idx) => (
+                          <React.Fragment key={idx}>
+                            {line}
+                            <br />
+                          </React.Fragment>
+                        ))}
+                      </div>
+                    ) : (
+                      <div>{finalMessage}</div>
+                    )
+                  }
                 />
 
                 <ConditionallyRender

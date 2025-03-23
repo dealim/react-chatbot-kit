@@ -2,17 +2,19 @@ import React from 'react';
 import './ChatbotMessage.css';
 import { ICustomComponents } from '../../interfaces/IConfig';
 interface IChatbotMessageProps {
-    message: string;
+    message: string | React.ReactNode;
     withAvatar?: boolean;
     loading?: boolean;
-    messages: any[];
     delay?: number;
     id: number;
-    setState?: React.Dispatch<React.SetStateAction<any>>;
     customComponents?: ICustomComponents;
-    customStyles: {
+    customStyles?: {
         backgroundColor: string;
     };
+    messages?: any[];
+    setState?: React.Dispatch<React.SetStateAction<any>>;
+    requestFunc?: () => Promise<any>;
+    onResponse?: (data: any) => React.ReactNode;
 }
-declare const ChatbotMessage: ({ message, withAvatar, loading, messages, customComponents, setState, customStyles, delay, id, }: IChatbotMessageProps) => JSX.Element;
+declare const ChatbotMessage: ({ message, withAvatar, loading, delay, id, customComponents, customStyles, messages, setState, requestFunc, onResponse, }: IChatbotMessageProps) => JSX.Element;
 export default ChatbotMessage;
