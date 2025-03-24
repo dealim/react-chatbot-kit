@@ -21,5 +21,5 @@ interface IChatProps {
     actions?: object;
     messageContainerRef: React.MutableRefObject<HTMLDivElement>;
 }
-declare const Chat: ({ state, setState, widgetRegistry, messageParser, parse, customComponents, actionProvider, botName, customStyles, headerText, customMessages, placeholderText, validator, disableScrollToBottom, messageHistory, actions, messageContainerRef, }: IChatProps) => JSX.Element;
+declare const Chat: ({ state, setState, widgetRegistry, messageParser, parse, customComponents, actionProvider, botName, customStyles, headerText, customMessages, placeholderText, validator, disableScrollToBottom, messageHistory, actions, messageContainerRef, }: IChatProps) => React.JSX.Element;
 export default Chat;

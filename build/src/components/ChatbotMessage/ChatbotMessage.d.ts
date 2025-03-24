@@ -16,5 +16,5 @@ interface IChatbotMessageProps {
     requestFunc?: () => Promise<any>;
     onResponse?: (data: any) => React.ReactNode;
 }
-declare const ChatbotMessage: ({ message, withAvatar, loading, delay, id, customComponents, customStyles, messages, setState, requestFunc, onResponse, }: IChatbotMessageProps) => JSX.Element;
+declare const ChatbotMessage: ({ message, withAvatar, loading, delay, id, customComponents, customStyles, messages, setState, requestFunc, onResponse, }: IChatbotMessageProps) => React.JSX.Element;
 export default ChatbotMessage;

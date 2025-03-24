@@ -1,3 +1,4 @@
+import React from 'react';
 import IConfig from '../../interfaces/IConfig';
 import { IMessage } from '../../interfaces/IMessages';
 interface IChatbotProps {
@@ -12,5 +13,5 @@ interface IChatbotProps {
     runInitialMessagesWithHistory?: Boolean;
     disableScrollToBottom?: boolean;
 }
-declare const Chatbot: ({ actionProvider, messageParser, config, headerText, placeholderText, saveMessages, messageHistory, runInitialMessagesWithHistory, disableScrollToBottom, validator, ...rest }: IChatbotProps) => JSX.Element;
+declare const Chatbot: ({ actionProvider, messageParser, config, headerText, placeholderText, saveMessages, messageHistory, runInitialMessagesWithHistory, disableScrollToBottom, validator, ...rest }: IChatbotProps) => React.JSX.Element;
 export default Chatbot;
